@@ -4,6 +4,7 @@ enum AppTab { case scanner, simulator }
 
 struct ContentView: View {
     @StateObject private var session = ScanSession()
+    @StateObject private var simSession = SimulatorSession()
     @State private var activeTab: AppTab = .scanner
 
     var body: some View {
@@ -24,7 +25,7 @@ struct ContentView: View {
             case .scanner:
                 ScannerView(session: session)
             case .simulator:
-                SimulatorView()
+                SimulatorView(session: simSession)
             }
         }
     }

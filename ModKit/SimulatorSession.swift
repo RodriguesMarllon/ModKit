@@ -116,10 +116,10 @@ final class SimulatorSession: ObservableObject {
 // MARK: - SimRegister
 
 struct SimRegister: Identifiable {
-    let id: Int   // index
     let index: Int
     var value: UInt16
 
+    var id: Int { index }
     var addressLabel: String { "4\(String(format: "%04d", index + 1))" }
     var hexLabel: String { String(format: "%04X", value) }
 }
