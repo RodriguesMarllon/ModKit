@@ -62,7 +62,7 @@ actor ModbusClient {
 
     // MARK: Connect / Disconnect
 
-    func connect(host: String, port: UInt16) async throws {
+    func connect(host: String, port: UInt16, timeoutSeconds: Double = 8) async throws {
         if connected { await internalDisconnect() }
 
         guard let nwPort = NWEndpoint.Port(rawValue: port) else {
@@ -72,26 +72,41 @@ actor ModbusClient {
         let conn = NWConnection(to: endpoint, using: .tcp)
         self.connection = conn
 
-        // Wrap the callback-based NWConnection into async/await
-        try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Void, Error>) in
-            var resumed = false
-            conn.stateUpdateHandler = { state in
-                guard !resumed else { return }
-                switch state {
-                case .ready:
+        // withTaskCancellationHandler: cancel button → conn.cancel() → stateHandler fires .cancelled
+        try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Void, Error>) in
+                var resumed = false
+
+                // Auto-timeout: if TCP handshake never completes (e.g. port filtered)
+                let deadline = DispatchWorkItem {
+                    guard !resumed else { return }
                     resumed = true
-                    cont.resume()
-                case .failed(let err):
-                    resumed = true
-                    cont.resume(throwing: ModbusError.connectionFailed(err.localizedDescription))
-                case .cancelled:
-                    resumed = true
-                    cont.resume(throwing: ModbusError.connectionFailed("Cancelled"))
-                default:
-                    break
+                    conn.cancel()
+                    cont.resume(throwing: ModbusError.timeout)
                 }
+                DispatchQueue.global().asyncAfter(deadline: .now() + timeoutSeconds, execute: deadline)
+
+                conn.stateUpdateHandler = { state in
+                    deadline.cancel()
+                    guard !resumed else { return }
+                    switch state {
+                    case .ready:
+                        resumed = true
+                        cont.resume()
+                    case .failed(let err):
+                        resumed = true
+                        cont.resume(throwing: ModbusError.connectionFailed(err.localizedDescription))
+                    case .cancelled:
+                        resumed = true
+                        cont.resume(throwing: CancellationError())
+                    default:
+                        break
+                    }
+                }
+                conn.start(queue: .global(qos: .userInitiated))
             }
-            conn.start(queue: .global(qos: .userInitiated))
+        } onCancel: {
+            conn.cancel()
         }
         connected = true
     }

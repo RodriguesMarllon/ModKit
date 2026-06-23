@@ -69,12 +69,17 @@ private struct ConnectionBar: View {
                 ProgressView().scaleEffect(0.6).frame(width: 20)
             }
 
-            Button(session.isConnected ? "Disconnect" : "Connect") {
-                session.isConnected ? session.disconnect() : session.connect()
+            Button(session.isConnected ? "Disconnect" : session.isConnecting ? "Cancel" : "Connect") {
+                if session.isConnected {
+                    session.disconnect()
+                } else if session.isConnecting {
+                    session.cancelConnect()
+                } else {
+                    session.connect()
+                }
             }
             .buttonStyle(.borderedProminent)
-            .tint(session.isConnected ? .red : .accentColor)
-            .disabled(session.isConnecting)
+            .tint(session.isConnected ? .red : session.isConnecting ? .orange : .accentColor)
 
             Circle()
                 .fill(session.isConnected ? Color.green : Color.gray.opacity(0.4))

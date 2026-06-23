@@ -65,6 +65,7 @@ final class ScanSession: ObservableObject {
 
     private let client = ModbusClient()
     private var pollTask: Task<Void, Never>?
+    private var connectTask: Task<Void, Never>?
 
     // MARK: Computed
 
@@ -76,7 +77,14 @@ final class ScanSession: ObservableObject {
     // MARK: Connect
 
     func connect() {
-        Task { await doConnect() }
+        connectTask = Task { await doConnect() }
+    }
+
+    func cancelConnect() {
+        connectTask?.cancel()
+        connectTask = nil
+        isConnecting = false
+        statusMessage = "Cancelled"
     }
 
     func disconnect() {
@@ -91,11 +99,15 @@ final class ScanSession: ObservableObject {
             isConnected = true
             statusMessage = "Connected to \(host):\(port) — ready"
             await doScan()
+        } catch is CancellationError {
+            isConnected = false
+            statusMessage = "Connection cancelled"
         } catch {
             isConnected = false
             statusMessage = "Error: \(error.localizedDescription)"
         }
         isConnecting = false
+        connectTask = nil
     }
 
     private func doDisconnect() async {

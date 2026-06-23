@@ -45,7 +45,7 @@ struct WriteView: View {
                         TextField("0", text: $decStr)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: 130)
-                            .onChange(of: decStr) { _, v in
+                            .onChange(of: decStr) { v in
                                 if let n = UInt16(v) {
                                     hexStr = String(format: "%04X", n)
                                     errorMsg = ""
@@ -59,7 +59,7 @@ struct WriteView: View {
                         TextField("0000", text: $hexStr)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: 110)
-                            .onChange(of: hexStr) { _, v in
+                            .onChange(of: hexStr) { v in
                                 if let n = UInt16(v.uppercased(), radix: 16) {
                                     decStr = "\(n)"
                                     errorMsg = ""
