@@ -1,9 +1,9 @@
 import SwiftUI
 
 @main
-struct ModScanApp: App {
+struct ModKitApp: App {
     var body: some Scene {
-        Window("ModScan", id: "main") {
+        Window("ModKit", id: "main") {
             ContentView()
                 .frame(minWidth: 900, minHeight: 600)
         }

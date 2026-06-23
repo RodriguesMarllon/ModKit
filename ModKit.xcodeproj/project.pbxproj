@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA00000000000000AAAA0017 /* ModScanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000AAAA0010 /* ModScanApp.swift */; };
+		AA00000000000000AAAA0017 /* ModKitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000AAAA0010 /* ModKitApp.swift */; };
 		AA00000000000000AAAA0018 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000AAAA0011 /* ContentView.swift */; };
 		AA00000000000000AAAA0019 /* ModbusClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000AAAA0012 /* ModbusClient.swift */; };
 		AA00000000000000AAAA001A /* ScanSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000AAAA0013 /* ScanSession.swift */; };
@@ -17,8 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AA00000000000000AAAA0009 /* ModScan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModScan.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA00000000000000AAAA0010 /* ModScanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModScanApp.swift; sourceTree = "<group>"; };
+		AA00000000000000AAAA0009 /* ModKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA00000000000000AAAA0010 /* ModKitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModKitApp.swift; sourceTree = "<group>"; };
 		AA00000000000000AAAA0011 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AA00000000000000AAAA0012 /* ModbusClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModbusClient.swift; sourceTree = "<group>"; };
 		AA00000000000000AAAA0013 /* ScanSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSession.swift; sourceTree = "<group>"; };
@@ -49,7 +49,7 @@
 		AA00000000000000AAAA0003 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AA00000000000000AAAA0009 /* ModScan.app */,
+				AA00000000000000AAAA0009 /* ModKit.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -57,7 +57,7 @@
 		AA00000000000000AAAA0004 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				AA00000000000000AAAA0010 /* ModScanApp.swift */,
+				AA00000000000000AAAA0010 /* ModKitApp.swift */,
 				AA00000000000000AAAA0011 /* ContentView.swift */,
 				AA00000000000000AAAA0012 /* ModbusClient.swift */,
 				AA00000000000000AAAA0013 /* ScanSession.swift */,
@@ -65,7 +65,7 @@
 				AA00000000000000AAAA0015 /* WriteView.swift */,
 				AA00000000000000AAAA0016 /* Assets.xcassets */,
 			);
-			path = ModScan;
+			path = ModKit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -73,7 +73,7 @@
 /* Begin PBXNativeTarget section */
 		AA00000000000000AAAA0005 /* ModScan */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AA00000000000000AAAA000B /* Build configuration list for PBXNativeTarget "ModScan" */;
+			buildConfigurationList = AA00000000000000AAAA000B /* Build configuration list for PBXNativeTarget "ModKit" */;
 			buildPhases = (
 				AA00000000000000AAAA0006 /* Sources */,
 				AA00000000000000AAAA0007 /* Resources */,
@@ -83,9 +83,9 @@
 			);
 			dependencies = (
 			);
-			name = ModScan;
-			productName = ModScan;
-			productReference = AA00000000000000AAAA0009 /* ModScan.app */;
+			name = ModKit;
+			productName = ModKit;
+			productReference = AA00000000000000AAAA0009 /* ModKit.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -103,7 +103,7 @@
 					};
 				};
 			};
-			buildConfigurationList = AA00000000000000AAAA000A /* Build configuration list for PBXProject "ModScan" */;
+			buildConfigurationList = AA00000000000000AAAA000A /* Build configuration list for PBXProject "ModKit" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -137,7 +137,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA00000000000000AAAA0017 /* ModScanApp.swift in Sources */,
+				AA00000000000000AAAA0017 /* ModKitApp.swift in Sources */,
 				AA00000000000000AAAA0018 /* ContentView.swift in Sources */,
 				AA00000000000000AAAA0019 /* ModbusClient.swift in Sources */,
 				AA00000000000000AAAA001A /* ScanSession.swift in Sources */,
@@ -255,7 +255,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = ModScan;
+				INFOPLIST_KEY_CFBundleDisplayName = ModKit;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -263,7 +263,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.marllonrodrigues.modscan";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marllonrodrigues.modkit";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -280,7 +280,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = ModScan;
+				INFOPLIST_KEY_CFBundleDisplayName = ModKit;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -288,7 +288,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.marllonrodrigues.modscan";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marllonrodrigues.modkit";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -298,7 +298,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AA00000000000000AAAA000A /* Build configuration list for PBXProject "ModScan" */ = {
+		AA00000000000000AAAA000A /* Build configuration list for PBXProject "ModKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA00000000000000AAAA000C /* Debug */,
@@ -307,7 +307,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AA00000000000000AAAA000B /* Build configuration list for PBXNativeTarget "ModScan" */ = {
+		AA00000000000000AAAA000B /* Build configuration list for PBXNativeTarget "ModKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA00000000000000AAAA000E /* Debug */,

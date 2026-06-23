@@ -9,6 +9,7 @@ enum ModbusError: LocalizedError {
     case exception(UInt8)
     case malformedResponse
     case requestTooLarge
+    case timeout
 
     var errorDescription: String? {
         switch self {
@@ -17,6 +18,7 @@ enum ModbusError: LocalizedError {
         case .exception(let c):       return "Modbus exception 0x\(String(c, radix: 16, uppercase: true))"
         case .malformedResponse:      return "Malformed response"
         case .requestTooLarge:        return "Count exceeds Modbus limit (max 125 registers per request)"
+        case .timeout:                return "Connection timed out"
         }
     }
 }

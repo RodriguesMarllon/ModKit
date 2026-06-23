@@ -41,7 +41,7 @@ private struct ConnectionBar: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Label("ModScan", systemImage: "bolt.horizontal.icloud")
+            Label("ModKit", systemImage: "bolt.horizontal.icloud")
                 .font(.headline)
                 .foregroundStyle(Color.accentColor)
 
