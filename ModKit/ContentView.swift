@@ -1,7 +1,56 @@
 import SwiftUI
 
+enum AppTab { case scanner, simulator }
+
 struct ContentView: View {
     @StateObject private var session = ScanSession()
+    @State private var activeTab: AppTab = .scanner
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Tab bar
+            HStack(spacing: 0) {
+                tabButton("Scanner", tab: .scanner, icon: "magnifyingglass")
+                tabButton("Simulator", tab: .simulator, icon: "server.rack")
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 6)
+            .background(.bar)
+
+            Divider()
+
+            // Content
+            switch activeTab {
+            case .scanner:
+                ScannerView(session: session)
+            case .simulator:
+                SimulatorView()
+            }
+        }
+    }
+
+    private func tabButton(_ label: String, tab: AppTab, icon: String) -> some View {
+        Button {
+            activeTab = tab
+        } label: {
+            Label(label, systemImage: icon)
+                .font(.system(size: 13, weight: activeTab == tab ? .semibold : .regular))
+                .foregroundStyle(activeTab == tab ? Color.accentColor : Color.secondary)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 6)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(activeTab == tab ? Color.accentColor.opacity(0.12) : Color.clear)
+                )
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - ScannerView (extracted from old ContentView body)
+
+struct ScannerView: View {
+    @ObservedObject var session: ScanSession
 
     var body: some View {
         VStack(spacing: 0) {

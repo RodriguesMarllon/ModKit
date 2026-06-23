@@ -14,6 +14,9 @@
 		AA00000000000000AAAA001B /* RegisterTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000AAAA0014 /* RegisterTableView.swift */; };
 		AA00000000000000AAAA001C /* WriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000AAAA0015 /* WriteView.swift */; };
 		AA00000000000000AAAA001D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA00000000000000AAAA0016 /* Assets.xcassets */; };
+		BB00000000000000BBBB0004 /* ModbusServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000BBBB0001 /* ModbusServer.swift */; };
+		BB00000000000000BBBB0005 /* SimulatorSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000BBBB0002 /* SimulatorSession.swift */; };
+		BB00000000000000BBBB0006 /* SimulatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000000000000BBBB0003 /* SimulatorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +28,9 @@
 		AA00000000000000AAAA0014 /* RegisterTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableView.swift; sourceTree = "<group>"; };
 		AA00000000000000AAAA0015 /* WriteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteView.swift; sourceTree = "<group>"; };
 		AA00000000000000AAAA0016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BB00000000000000BBBB0001 /* ModbusServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModbusServer.swift; sourceTree = "<group>"; };
+		BB00000000000000BBBB0002 /* SimulatorSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorSession.swift; sourceTree = "<group>"; };
+		BB00000000000000BBBB0003 /* SimulatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +70,9 @@
 				AA00000000000000AAAA0014 /* RegisterTableView.swift */,
 				AA00000000000000AAAA0015 /* WriteView.swift */,
 				AA00000000000000AAAA0016 /* Assets.xcassets */,
+				BB00000000000000BBBB0001 /* ModbusServer.swift */,
+				BB00000000000000BBBB0002 /* SimulatorSession.swift */,
+				BB00000000000000BBBB0003 /* SimulatorView.swift */,
 			);
 			path = ModKit;
 			sourceTree = "<group>";
@@ -143,6 +152,9 @@
 				AA00000000000000AAAA001A /* ScanSession.swift in Sources */,
 				AA00000000000000AAAA001B /* RegisterTableView.swift in Sources */,
 				AA00000000000000AAAA001C /* WriteView.swift in Sources */,
+				BB00000000000000BBBB0004 /* ModbusServer.swift in Sources */,
+				BB00000000000000BBBB0005 /* SimulatorSession.swift in Sources */,
+				BB00000000000000BBBB0006 /* SimulatorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
