@@ -23,11 +23,15 @@ jobs:
             -scheme ModKit \
             -configuration Release \
             -destination "platform=macOS" \
-            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=YES \
+            CODE_SIGNING_ALLOWED=YES \
             build | xcpretty || xcodebuild \
             -project ModKit.xcodeproj \
             -scheme ModKit \
             -configuration Release \
             -destination "platform=macOS" \
-            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=YES \
+            CODE_SIGNING_ALLOWED=YES \
             build

@@ -22,7 +22,9 @@ jobs:
             -scheme ModKit \
             -configuration Release \
             -archivePath build/ModKit.xcarchive \
-            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=YES \
+            CODE_SIGNING_ALLOWED=YES \
             archive
 
       - name: Export .app
@@ -31,7 +33,8 @@ jobs:
             -exportArchive \
             -archivePath build/ModKit.xcarchive \
             -exportPath build/export \
-            -exportOptionsPlist ExportOptions.plist
+            -exportOptionsPlist ExportOptions.plist \
+            CODE_SIGN_IDENTITY="-"
 
       - name: Zip .app
         run: |
@@ -48,16 +51,26 @@ jobs:
           body: |
             ## ModKit ${{ github.ref_name }}
 
-            Native macOS Modbus TCP scanner.
+            Native macOS Modbus TCP scanner and simulator — no dependencies, no Electron.
 
             ### Install
             1. Download `ModKit-${{ github.ref_name }}-macOS.zip`
-            2. Unzip and drag **ModKit.app** to Applications
-            3. First launch: right-click → Open (Gatekeeper bypass for unsigned builds)
+            2. Unzip and drag **ModKit.app** to `/Applications`
+            3. First launch — macOS will block it because the app is ad-hoc signed (not notarized):
+               - **macOS 14/15:** go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway**
+               - **macOS 13:** right-click the app → **Open** → **Open**
+
+            > **Tip:** if you see "ModKit is damaged", run this in Terminal to clear the quarantine flag:
+            > ```
+            > xattr -cr /Applications/ModKit.app
+            > ```
 
             ### Features
             - Read Holding Registers (FC03), Input Registers (FC04), Coils (FC01), Discrete Inputs (FC02)
             - Write single register (FC06)
+            - Binary column with per-bit position labels (15 → 0)
             - Auto-poll with configurable interval
-            - Native macOS Table with sort by column
-            - Connection timeout + Cancel button
+            - Last used IP / port / Unit ID saved automatically
+            - Built-in Modbus TCP simulator (Slave mode, 2 000 registers)
+            - Native macOS Table with sortable columns
+            - Connection timeout (8 s) with Cancel

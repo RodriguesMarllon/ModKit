@@ -34,7 +34,14 @@ Native macOS Modbus TCP client. No dependencies, no Electron, no Java — just a
 
 1. Download the latest `ModKit-vX.X.X-macOS.zip` from [Releases](../../releases)
 2. Unzip and drag **ModKit.app** to `/Applications`
-3. First launch: **right-click → Open** (required once because the app is unsigned)
+3. First launch — macOS will block it (app is ad-hoc signed, not notarized):
+   - **macOS 14 / 15:** go to **System Settings → Privacy & Security**, scroll down, click **Open Anyway**
+   - **macOS 13:** right-click the app → **Open** → **Open**
+
+> If you see "ModKit is damaged and can't be opened", run this in Terminal:
+> ```
+> xattr -cr /Applications/ModKit.app
+> ```
 
 ### Option B — Build from source
 

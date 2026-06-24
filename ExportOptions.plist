@@ -5,6 +5,8 @@
     <key>method</key>
     <string>mac-application</string>
     <key>signingStyle</key>
-    <string>automatic</string>
+    <string>manual</string>
+    <key>signingCertificate</key>
+    <string>-</string>
 </dict>
 </plist>
