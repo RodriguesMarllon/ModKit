@@ -34,7 +34,8 @@ actor ModbusServer {
         self.listener = ln
 
         ln.newConnectionHandler = { [weak self] conn in
-            Task { await self?.accept(conn) }
+            guard let server = self else { return }
+            Task { await server.accept(conn) }
         }
         ln.start(queue: .global(qos: .userInitiated))
         running = true
@@ -80,18 +81,18 @@ actor ModbusServer {
 
     private func receiveLoop(conn: NWConnection, buffer: Data) {
         conn.receive(minimumIncompleteLength: 1, maximumLength: 512) { [weak self] chunk, _, done, err in
-            guard let self else { return }
+            guard let server = self else { return }
             if err != nil || done { conn.cancel(); return }
 
             var buf = buffer
             if let chunk { buf.append(chunk) }
 
             Task {
-                let (remaining, responses) = await self.drain(buf)
+                let (remaining, responses) = await server.drain(buf)
                 for r in responses {
                     conn.send(content: r, completion: .idempotent)
                 }
-                await self.receiveLoop(conn: conn, buffer: remaining)
+                await server.receiveLoop(conn: conn, buffer: remaining)
             }
         }
     }
