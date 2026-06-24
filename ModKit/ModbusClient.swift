@@ -1,5 +1,6 @@
 import Foundation
 import Network
+import os
 
 // MARK: - Errors
 
@@ -77,12 +78,20 @@ actor ModbusClient {
         // withTaskCancellationHandler: cancel button → conn.cancel() → stateHandler fires .cancelled
         try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Void, Error>) in
-                var resumed = false
+                // OSAllocatedUnfairLock is Sendable — safe to capture across concurrent closures.
+                let resumed = OSAllocatedUnfairLock(initialState: false)
+
+                @Sendable func tryResume() -> Bool {
+                    resumed.withLock { done -> Bool in
+                        if done { return false }
+                        done = true
+                        return true
+                    }
+                }
 
                 // Auto-timeout: if TCP handshake never completes (e.g. port filtered)
                 let deadline = DispatchWorkItem {
-                    guard !resumed else { return }
-                    resumed = true
+                    guard tryResume() else { return }
                     conn.cancel()
                     cont.resume(throwing: ModbusError.timeout)
                 }
@@ -90,16 +99,13 @@ actor ModbusClient {
 
                 conn.stateUpdateHandler = { state in
                     deadline.cancel()
-                    guard !resumed else { return }
+                    guard tryResume() else { return }
                     switch state {
                     case .ready:
-                        resumed = true
                         cont.resume()
                     case .failed(let err):
-                        resumed = true
                         cont.resume(throwing: ModbusError.connectionFailed(err.localizedDescription))
                     case .cancelled:
-                        resumed = true
                         cont.resume(throwing: CancellationError())
                     default:
                         break

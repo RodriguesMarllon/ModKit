@@ -44,12 +44,10 @@ struct RegisterTableView: View {
             }
             .width(min: 60, ideal: 80)
 
-            TableColumn("Binary (nibbles)") { row in
-                Text(row.binLabel)
-                    .font(.system(size: 12, design: .monospaced))
-                    .foregroundStyle(Color.secondary)
+            TableColumn("Binary") { row in
+                BinaryBitsView(value: row.value)
             }
-            .width(min: 130, ideal: 160)
+            .width(min: 180, ideal: 210)
         }
         .contextMenu(forSelectionType: RegisterRow.ID.self) { ids in
             if let id = ids.first,
@@ -86,5 +84,42 @@ struct RegisterTableView: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+// MARK: - BinaryBitsView
+
+private struct BinaryBitsView: View {
+    let value: UInt16
+
+    private let nibbles: [[Int]] = [
+        [15, 14, 13, 12],
+        [11, 10,  9,  8],
+        [ 7,  6,  5,  4],
+        [ 3,  2,  1,  0],
+    ]
+
+    var body: some View {
+        HStack(spacing: 6) {
+            ForEach(nibbles, id: \.first) { group in
+                HStack(spacing: 3) {
+                    ForEach(group, id: \.self) { bit in
+                        bitCell(bit: bit)
+                    }
+                }
+            }
+        }
+    }
+
+    private func bitCell(bit: Int) -> some View {
+        let isSet = (value >> bit) & 1 == 1
+        return VStack(spacing: 1) {
+            Text("\(bit)")
+                .font(.system(size: 7, design: .monospaced))
+                .foregroundStyle(.tertiary)
+            Text(isSet ? "1" : "0")
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundStyle(isSet ? Color.orange : Color.secondary)
+        }
     }
 }

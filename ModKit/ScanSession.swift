@@ -34,10 +34,16 @@ struct RegisterRow: Identifiable {
 @MainActor
 final class ScanSession: ObservableObject {
 
-    // Connection params
-    @Published var host = "192.168.12.177"
-    @Published var portStr = "502"
-    @Published var unitID: Int = 1
+    // Connection params — persisted via UserDefaults
+    @Published var host = UserDefaults.standard.string(forKey: "mk.host") ?? "" {
+        didSet { UserDefaults.standard.set(host, forKey: "mk.host") }
+    }
+    @Published var portStr = UserDefaults.standard.string(forKey: "mk.port") ?? "502" {
+        didSet { UserDefaults.standard.set(portStr, forKey: "mk.port") }
+    }
+    @Published var unitID: Int = UserDefaults.standard.object(forKey: "mk.unitID") as? Int ?? 1 {
+        didSet { UserDefaults.standard.set(unitID, forKey: "mk.unitID") }
+    }
 
     // Scan params
     @Published var startAddrStr = "0"
