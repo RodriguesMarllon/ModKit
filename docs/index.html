@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ModKit — Native Modbus Toolkit for Mac</title>
+  <meta name="description" content="A native macOS Modbus TCP scanner and simulator. No Electron, no dependencies. Built for engineers who work with real hardware." />
+  <meta property="og:title" content="ModKit — Native Modbus Toolkit for Mac" />
+  <meta property="og:description" content="Scan, watch, and simulate Modbus TCP devices natively on macOS." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #000;
+      --bg-2: #0a0a0a;
+      --bg-card: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --text: #f5f5f7;
+      --text-2: rgba(245,245,247,0.6);
+      --text-3: rgba(245,245,247,0.35);
+      --accent: #2997ff;
+      --accent-glow: rgba(41,151,255,0.25);
+      --radius: 18px;
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+      --mono: "SF Mono", ui-monospace, "Cascadia Code", monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 52px;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.3px;
+    }
+
+    .nav-logo svg { width: 22px; height: 22px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      color: var(--text-2);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-gh {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-2);
+      text-decoration: none;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 980px;
+      transition: all 0.2s;
+    }
+
+    .nav-gh:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .nav-gh svg { width: 15px; height: 15px; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(ellipse at center, rgba(41,151,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      background: rgba(41,151,255,0.1);
+      border: 1px solid rgba(41,151,255,0.25);
+      border-radius: 980px;
+      padding: 5px 14px;
+      margin-bottom: 28px;
+      letter-spacing: 0.2px;
+    }
+
+    h1 {
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 700;
+      letter-spacing: -2.5px;
+      line-height: 1.0;
+      background: linear-gradient(180deg, #f5f5f7 0%, rgba(245,245,247,0.6) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    .hero-sub {
+      font-size: clamp(18px, 2.5vw, 24px);
+      color: var(--text-2);
+      max-width: 540px;
+      line-height: 1.5;
+      font-weight: 400;
+      margin-bottom: 40px;
+      letter-spacing: -0.3px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 80px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #fff;
+      background: var(--accent);
+      border: none;
+      border-radius: 980px;
+      padding: 12px 24px;
+      text-decoration: none;
+      transition: all 0.2s;
+      letter-spacing: -0.1px;
+    }
+
+    .btn-primary:hover { background: #0077ed; transform: scale(1.02); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--accent);
+      background: transparent;
+      border: 1px solid rgba(41,151,255,0.4);
+      border-radius: 980px;
+      padding: 12px 24px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover { border-color: var(--accent); background: rgba(41,151,255,0.06); }
+
+    /* ── SCREENSHOT FRAME ── */
+    .screenshot-frame {
+      width: 100%;
+      max-width: 900px;
+      position: relative;
+    }
+
+    .macbook {
+      width: 100%;
+      aspect-ratio: 16/10;
+      background: #1c1c1e;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.5),
+        0 40px 120px rgba(0,0,0,0.8),
+        0 0 80px rgba(41,151,255,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .macbook-bar {
+      height: 28px;
+      background: #2c2c2e;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 6px;
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+
+    .macbook-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: calc(100% - 28px);
+      background: linear-gradient(145deg, #161618 0%, #0d0d0f 100%);
+      color: var(--text-3);
+      font-size: 14px;
+      font-weight: 500;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .macbook-content svg { opacity: 0.3; width: 40px; height: 40px; }
+
+    /* ── SECTION ── */
+    section {
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 18px;
+      color: var(--text-2);
+      max-width: 540px;
+      line-height: 1.6;
+      margin-bottom: 64px;
+    }
+
+    /* ── FEATURE GRID ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .feature-card {
+      background: var(--bg-2);
+      padding: 32px;
+      transition: background 0.2s;
+    }
+
+    .feature-card:hover { background: rgba(255,255,255,0.03); }
+
+    .feature-icon {
+      width: 44px; height: 44px;
+      background: rgba(41,151,255,0.12);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon svg { width: 22px; height: 22px; color: var(--accent); }
+
+    .feature-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    /* ── TABS SECTION ── */
+    .tabs-section {
+      background: var(--bg-2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tabs-section section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .tab-content h3 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .tab-content p {
+      font-size: 16px;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-2);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 980px;
+      padding: 4px 12px;
+      font-family: var(--mono);
+    }
+
+    .tab-preview {
+      background: #1c1c1e;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .tab-preview-bar {
+      height: 24px;
+      background: #2c2c2e;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      gap: 5px;
+    }
+
+    .tab-preview-body {
+      padding: 20px;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-3);
+      font-size: 13px;
+    }
+
+    /* ── INSTALL ── */
+    .install-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .step {
+      position: relative;
+      padding: 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .step-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: var(--mono);
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .step h4 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    .code-block {
+      background: #1c1c1e;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: #a8ff78;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .code-block::before {
+      content: "Terminal";
+      position: absolute;
+      top: 10px; right: 14px;
+      font-size: 11px;
+      color: var(--text-3);
+      font-family: var(--font);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    footer p {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    footer a {
+      color: var(--text-3);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--text-2); }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .install-steps { grid-template-columns: 1fr; }
+      .tabs-section section { grid-template-columns: 1fr; gap: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <svg viewBox="0 0 22 22" fill="none">
+      <rect width="22" height="22" rx="6" fill="#2997ff"/>
+      <rect x="5" y="8" width="12" height="2" rx="1" fill="white"/>
+      <rect x="5" y="12" width="8" height="2" rx="1" fill="white" opacity="0.6"/>
+    </svg>
+    ModKit
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#install">Install</a></li>
+  </ul>
+  <a href="https://github.com/RodriguesMarllon/ModKit" class="nav-gh" target="_blank">
+    <svg viewBox="0 0 16 16" fill="currentColor">
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+    </svg>
+    GitHub
+  </a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-badge">
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
+    v1.1.0 — Now with Watch tab
+  </span>
+  <h1>Modbus.<br>Native. Precise.</h1>
+  <p class="hero-sub">
+    A lightweight Modbus TCP toolkit built for macOS. Scan registers, monitor named tags, simulate devices — all without Electron or dependencies.
+  </p>
+  <div class="hero-cta">
+    <a href="https://github.com/RodriguesMarllon/ModKit/releases/latest" class="btn-primary" target="_blank">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1v9M4 7l3.5 3.5L11 7M2 13h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download for Mac
+    </a>
+    <a href="https://github.com/RodriguesMarllon/ModKit" class="btn-secondary" target="_blank">
+      View on GitHub →
+    </a>
+  </div>
+
+  <div class="screenshot-frame">
+    <div class="macbook">
+      <div class="macbook-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <div class="macbook-content">
+        <svg viewBox="0 0 40 40" fill="none">
+          <rect width="40" height="40" rx="8" fill="rgba(255,255,255,0.05)"/>
+          <rect x="8" y="14" width="24" height="3" rx="1.5" fill="rgba(255,255,255,0.3)"/>
+          <rect x="8" y="21" width="16" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+          <rect x="8" y="28" width="20" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+        </svg>
+        Screenshot coming soon
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <p class="section-label">Built different</p>
+  <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+  <p class="section-sub">ModKit is purpose-built for engineers working with real Modbus hardware. No browser wrapper, no runtime — just Swift and Network.framework.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <circle cx="11" cy="11" r="9"/>
+          <path d="M11 7v4l3 3"/>
+        </svg>
+      </div>
+      <div class="feature-title">Native performance</div>
+      <div class="feature-desc">Built entirely in Swift using Network.framework. No Electron, no Node.js — starts instantly and uses minimal resources.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <rect x="3" y="5" width="16" height="14" rx="2"/>
+          <path d="M3 9h16"/>
+          <path d="M7 5V3M15 5V3"/>
+        </svg>
+      </div>
+      <div class="feature-title">Watch tab</div>
+      <div class="feature-desc">Pin named registers and bits for at-a-glance monitoring. Set scale factors, drag to reorder, and edit watches in-place.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <rect x="3" y="3" width="16" height="16" rx="2"/>
+          <path d="M7 11h8M11 7v8"/>
+        </svg>
+      </div>
+      <div class="feature-title">Modbus simulator</div>
+      <div class="feature-desc">Turn your Mac into a Modbus TCP slave. 2,000 holding registers, configurable values — ideal for testing SCADA without real hardware.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M3 8h16M3 14h10"/>
+          <circle cx="16" cy="14" r="3"/>
+        </svg>
+      </div>
+      <div class="feature-title">Scale factors</div>
+      <div class="feature-desc">Raw Modbus integers often need ÷10, ÷100 to show real engineering values. Apply scale divisors per tag — presets for common ratios.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M6 12l4 4 6-8"/>
+          <circle cx="11" cy="11" r="9"/>
+        </svg>
+      </div>
+      <div class="feature-title">FC01–FC10 support</div>
+      <div class="feature-desc">Read Coils, Discrete Inputs, Holding Registers, Input Registers. Write single and multiple registers. Binary bit view for every register.</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M4 4l14 14M4 18L18 4"/>
+        </svg>
+      </div>
+      <div class="feature-title">Zero setup</div>
+      <div class="feature-desc">No install scripts, no package managers. Download, unzip, open. IP, port and Unit ID are saved between sessions automatically.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<div class="tabs-section" id="how-it-works">
+  <section>
+    <div class="tab-content">
+      <p class="section-label">Scanner</p>
+      <h3>Read any register, live.</h3>
+      <p>Connect to any Modbus TCP device and scan a register range with a single click. Auto-poll keeps values fresh at your chosen interval.</p>
+      <div class="pill-list">
+        <span class="pill">FC01</span>
+        <span class="pill">FC02</span>
+        <span class="pill">FC03</span>
+        <span class="pill">FC04</span>
+        <span class="pill">FC05</span>
+        <span class="pill">FC06</span>
+        <span class="pill">FC10</span>
+        <span class="pill">Auto-poll</span>
+        <span class="pill">Bit view</span>
+      </div>
+    </div>
+    <div class="tab-preview">
+      <div class="tab-preview-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      </div>
+      <div class="tab-preview-body">Screenshot — Scanner tab</div>
+    </div>
+  </section>
+</div>
+
+<div style="background: var(--bg);">
+  <section style="display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; padding: 100px 24px;">
+    <div class="tab-preview">
+      <div class="tab-preview-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      </div>
+      <div class="tab-preview-body">Screenshot — Watch tab</div>
+    </div>
+    <div class="tab-content">
+      <p class="section-label">Watch</p>
+      <h3>Name your tags. See what matters.</h3>
+      <p>Right-click any register to add it to Watch with a custom name. Set a scale divisor and monitor it in engineering units — no mental math needed.</p>
+      <div class="pill-list">
+        <span class="pill">Named tags</span>
+        <span class="pill">Scale ÷</span>
+        <span class="pill">Bit-level</span>
+        <span class="pill">Drag to reorder</span>
+        <span class="pill">Persisted</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- INSTALL -->
+<section id="install">
+  <p class="section-label">Get started</p>
+  <h2 class="section-title">Up in 30 seconds.</h2>
+  <p class="section-sub">ModKit is ad-hoc signed — no App Store, no notarization fees. macOS will ask you to confirm on first launch.</p>
+
+  <div class="install-steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h4>Download</h4>
+      <p>Grab the latest <code style="font-family:var(--mono); font-size:12px; color:var(--accent);">.zip</code> from the GitHub Releases page.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h4>Unzip & move</h4>
+      <p>Unzip and drag <strong>ModKit.app</strong> to your <code style="font-family:var(--mono); font-size:12px; color:var(--accent);">/Applications</code> folder.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h4>Allow in Security</h4>
+      <p>First launch: go to <strong>System Settings → Privacy & Security</strong> and click <strong>Open Anyway</strong>.</p>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <span style="color: var(--text-3)">$</span> xattr -cr /Applications/ModKit.app
+    <span style="color: var(--text-3); font-size:11px; display:block; margin-top:6px; font-family: var(--font);">
+      Run this if macOS says "ModKit is damaged"
+    </span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 ModKit — MIT License</p>
+  <div class="footer-links">
+    <a href="https://github.com/RodriguesMarllon/ModKit/releases" target="_blank">Releases</a>
+    <a href="https://github.com/RodriguesMarllon/ModKit/issues" target="_blank">Issues</a>
+    <a href="https://github.com/RodriguesMarllon/ModKit/blob/master/LICENSE" target="_blank">License</a>
+    <a href="https://github.com/RodriguesMarllon/ModKit" target="_blank">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
