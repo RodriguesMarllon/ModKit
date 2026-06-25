@@ -118,6 +118,7 @@ final class ScanSession: ObservableObject {
 
     private func doDisconnect() async {
         stopAutoPoll()
+        autoPoll = false
         await client.disconnect()
         isConnected = false
         statusMessage = "Disconnected"
@@ -178,7 +179,6 @@ final class ScanSession: ObservableObject {
     private func stopAutoPoll() {
         pollTask?.cancel()
         pollTask = nil
-        if autoPoll { autoPoll = false }
     }
 
     // MARK: Write

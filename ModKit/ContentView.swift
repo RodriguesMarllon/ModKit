@@ -1,10 +1,11 @@
 import SwiftUI
 
-enum AppTab { case scanner, simulator }
+enum AppTab { case scanner, watch, simulator }
 
 struct ContentView: View {
     @StateObject private var session = ScanSession()
     @StateObject private var simSession = SimulatorSession()
+    @StateObject private var watchStore = WatchStore()
     @State private var activeTab: AppTab = .scanner
 
     var body: some View {
@@ -12,6 +13,7 @@ struct ContentView: View {
             // Tab bar
             HStack(spacing: 0) {
                 tabButton("Scanner", tab: .scanner, icon: "magnifyingglass")
+                tabButton("Watch", tab: .watch, icon: "bookmark", badge: watchStore.items.count)
                 tabButton("Simulator", tab: .simulator, icon: "server.rack")
             }
             .padding(.horizontal, 16)
@@ -23,14 +25,16 @@ struct ContentView: View {
             // Content
             switch activeTab {
             case .scanner:
-                ScannerView(session: session)
+                ScannerView(session: session, watchStore: watchStore)
+            case .watch:
+                WatchView(store: watchStore, session: session)
             case .simulator:
                 SimulatorView(session: simSession)
             }
         }
     }
 
-    private func tabButton(_ label: String, tab: AppTab, icon: String) -> some View {
+    private func tabButton(_ label: String, tab: AppTab, icon: String, badge: Int = 0) -> some View {
         Button {
             activeTab = tab
         } label: {
@@ -43,6 +47,17 @@ struct ContentView: View {
                     RoundedRectangle(cornerRadius: 6)
                         .fill(activeTab == tab ? Color.accentColor.opacity(0.12) : Color.clear)
                 )
+                .overlay(alignment: .topTrailing) {
+                    if badge > 0 {
+                        Text("\(badge)")
+                            .font(.system(size: 9, weight: .bold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 2)
+                            .background(Color.accentColor, in: Capsule())
+                            .offset(x: 6, y: -4)
+                    }
+                }
         }
         .buttonStyle(.plain)
     }
@@ -52,6 +67,7 @@ struct ContentView: View {
 
 struct ScannerView: View {
     @ObservedObject var session: ScanSession
+    @ObservedObject var watchStore: WatchStore
 
     var body: some View {
         VStack(spacing: 0) {
@@ -69,7 +85,7 @@ struct ScannerView: View {
 
             Divider()
 
-            RegisterTableView(session: session)
+            RegisterTableView(session: session, watchStore: watchStore)
 
             Divider()
 

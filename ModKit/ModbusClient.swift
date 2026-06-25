@@ -98,14 +98,18 @@ actor ModbusClient {
                 DispatchQueue.global().asyncAfter(deadline: .now() + timeoutSeconds, execute: deadline)
 
                 conn.stateUpdateHandler = { state in
-                    deadline.cancel()
-                    guard tryResume() else { return }
                     switch state {
                     case .ready:
+                        deadline.cancel()
+                        guard tryResume() else { return }
                         cont.resume()
                     case .failed(let err):
+                        deadline.cancel()
+                        guard tryResume() else { return }
                         cont.resume(throwing: ModbusError.connectionFailed(err.localizedDescription))
                     case .cancelled:
+                        deadline.cancel()
+                        guard tryResume() else { return }
                         cont.resume(throwing: CancellationError())
                     default:
                         break

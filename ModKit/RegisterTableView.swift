@@ -2,8 +2,10 @@ import SwiftUI
 
 struct RegisterTableView: View {
     @ObservedObject var session: ScanSession
+    @ObservedObject var watchStore: WatchStore
     @State private var sortOrder = [KeyPathComparator(\RegisterRow.address)]
     @State private var selection: RegisterRow.ID?
+    @State private var watchTarget: RegisterRow?
 
     var sortedRows: [RegisterRow] {
         session.rows.sorted(using: sortOrder)
@@ -56,6 +58,10 @@ struct RegisterTableView: View {
                     session.writeTarget = row
                 }
                 Divider()
+                Button("Add to Watch...") {
+                    watchTarget = row
+                }
+                Divider()
                 Button("Copy Decimal") {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(row.decLabel, forType: .string)
@@ -70,6 +76,9 @@ struct RegisterTableView: View {
                let row = session.rows.first(where: { $0.id == id }) {
                 session.writeTarget = row
             }
+        }
+        .sheet(item: $watchTarget) { row in
+            AddWatchView(row: row, store: watchStore)
         }
     }
 
