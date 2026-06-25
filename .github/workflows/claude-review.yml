@@ -1,0 +1,41 @@
+name: Claude Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  issue_comment:
+    types: [created]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request != null &&
+       contains(github.event.comment.body, '@claude'))
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Code Review
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          direct_prompt: |
+            You are reviewing a Swift macOS app called ModKit — a native Modbus TCP scanner and simulator.
+
+            Review this PR focusing on:
+            - Swift 6 concurrency correctness (actor isolation, Sendable, async/await)
+            - SwiftUI state management and view lifecycle
+            - Modbus protocol correctness (frame format, function codes, error handling)
+            - Memory management (retain cycles, weak references)
+            - UX regressions in the Scanner, Watch, or Simulator tabs
+
+            Be concise. Flag real issues only — skip style nitpicks.

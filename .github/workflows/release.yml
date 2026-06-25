@@ -7,15 +7,25 @@ on:
 
 jobs:
   release:
-    runs-on: macos-14
+    runs-on: macos-15
     permissions:
       contents: write
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app
+        run: sudo xcode-select -s /Applications/Xcode_16.app
+
+      - name: Cache derived data
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-xcode-${{ hashFiles('**/*.xcodeproj/project.pbxproj') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-
 
       - name: Build Archive
         run: |
@@ -24,6 +34,7 @@ jobs:
             -scheme ModKit \
             -configuration Release \
             -archivePath build/ModKit.xcarchive \
+            -derivedDataPath ~/Library/Developer/Xcode/DerivedData \
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=YES \
             CODE_SIGNING_ALLOWED=YES \
@@ -43,6 +54,19 @@ jobs:
           cd build/export
           zip -r ../../ModKit-${{ github.ref_name }}-macOS.zip ModKit.app
 
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREV_TAG=$(git tag --sort=-version:refname | sed -n '2p')
+          if [ -z "$PREV_TAG" ]; then
+            LOG=$(git log --pretty=format:"- %s" | head -20)
+          else
+            LOG=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s")
+          fi
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          echo "$LOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -54,6 +78,9 @@ jobs:
             ## ModKit ${{ github.ref_name }}
 
             Native macOS Modbus TCP scanner and simulator — no dependencies, no Electron.
+
+            ### What's new
+            ${{ steps.changelog.outputs.log }}
 
             ### Install
             1. Download `ModKit-${{ github.ref_name }}-macOS.zip`
@@ -68,11 +95,11 @@ jobs:
             > ```
 
             ### Features
+            - Watch tab: monitor named registers/bits with scale factor and live values
             - Read Holding Registers (FC03), Input Registers (FC04), Coils (FC01), Discrete Inputs (FC02)
             - Write single register (FC06)
-            - Binary column with per-bit position labels (15 → 0)
             - Auto-poll with configurable interval
-            - Last used IP / port / Unit ID saved automatically
+            - Binary column with per-bit position labels (15 → 0)
             - Built-in Modbus TCP simulator (Slave mode, 2 000 registers)
-            - Native macOS Table with sortable columns
+            - Last used IP / port / Unit ID saved automatically
             - Connection timeout (8 s) with Cancel
