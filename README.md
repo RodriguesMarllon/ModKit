@@ -2,6 +2,7 @@
 
 Native macOS Modbus TCP client. No dependencies, no Electron, no Java — just a lean SwiftUI app built on Network.framework.
 
+[![Site](https://img.shields.io/badge/site-rodriguesmarllon.github.io%2FModKit-blue)](https://rodriguesmarllon.github.io/ModKit)
 ![macOS 13+](https://img.shields.io/badge/macOS-13%2B-black?logo=apple)
 ![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange?logo=swift)
 ![License](https://img.shields.io/badge/license-MIT-blue)
@@ -19,6 +20,13 @@ Native macOS Modbus TCP client. No dependencies, no Electron, no Java — just a
 - Sortable table — click any column header
 - Connection timeout (8 s) with Cancel button
 - Last used IP / port / Unit ID saved automatically
+
+### Watch
+- Pin any register or bit to the Watch tab with a custom name
+- Scale divisor (÷1 / ÷10 / ÷100 / ÷1000 or custom) with live preview
+- **Float32 view** — pair any two consecutive registers and decode as IEEE 754 float, with word-order selection (AB CD / CD AB)
+- Edit watches in-place via right-click → Edit Watch…
+- Drag to reorder, badge shows item count, persists across sessions
 
 ### Simulator (Modbus Slave)
 - Spin up a local Modbus TCP server on any port
@@ -78,4 +86,24 @@ Every Modbus diagnostic tool I could find was either Windows-only (ModScan32, Mo
 
 ## License
 
-MIT
+Copyright (c) 2025–2026 Marllon Rodrigues
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+See [LICENSE](LICENSE) for the full text.

@@ -9,7 +9,7 @@ struct RegisterRow: Identifiable {
     var value: UInt16
 
     // Display helpers
-    var addressLabel: String { "4\(String(format: "%04d", Int(address) + 1))" }
+    func addressLabel(base: Int = 1) -> String { "4\(String(format: "%04d", Int(address) + base))" }
     var decLabel: String { "\(value)" }
     var hexLabel: String { String(format: "%04X", value) }
     var binLabel: String {

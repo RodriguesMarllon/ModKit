@@ -3,6 +3,7 @@ import SwiftUI
 struct RegisterTableView: View {
     @ObservedObject var session: ScanSession
     @ObservedObject var watchStore: WatchStore
+    @EnvironmentObject private var settings: AppSettings
     @State private var sortOrder = [KeyPathComparator(\RegisterRow.address)]
     @State private var selection: RegisterRow.ID?
     @State private var watchTarget: RegisterRow?
@@ -26,7 +27,7 @@ struct RegisterTableView: View {
     private var table: some View {
         Table(sortedRows, selection: $selection, sortOrder: $sortOrder) {
             TableColumn("Address", value: \.address) { row in
-                Text(row.addressLabel)
+                Text(row.addressLabel(base: settings.addressBase))
                     .font(.system(size: 13, design: .monospaced))
                     .foregroundStyle(.secondary)
             }
@@ -54,7 +55,7 @@ struct RegisterTableView: View {
         .contextMenu(forSelectionType: RegisterRow.ID.self) { ids in
             if let id = ids.first,
                let row = session.rows.first(where: { $0.id == id }) {
-                Button("Write Register \(row.addressLabel)...") {
+                Button("Write Register \(row.addressLabel(base: settings.addressBase))...") {
                     session.writeTarget = row
                 }
                 Divider()

@@ -105,10 +105,10 @@ actor ModbusServer {
             let length = Int(buf[4]) << 8 | Int(buf[5])
             let total = 6 + length
             guard buf.count >= total else { break }
-            if let resp = processFrame(buf.prefix(total)) {
+            if let resp = processFrame(Data(buf.prefix(total))) {
                 responses.append(resp)
             }
-            buf = buf.dropFirst(total)
+            buf = Data(buf.dropFirst(total))
         }
         return (buf, responses)
     }

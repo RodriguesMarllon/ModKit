@@ -3,6 +3,7 @@ import SwiftUI
 struct WriteView: View {
     let row: RegisterRow
     @ObservedObject var session: ScanSession
+    @EnvironmentObject private var settings: AppSettings
     @Environment(\.dismiss) private var dismiss
 
     @State private var decStr = ""
@@ -17,7 +18,7 @@ struct WriteView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Write Register")
                         .font(.headline)
-                    Text("\(row.addressLabel)  —  current: \(row.decLabel) (0x\(row.hexLabel))")
+                    Text("\(row.addressLabel(base: settings.addressBase))  —  current: \(row.decLabel) (0x\(row.hexLabel))")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

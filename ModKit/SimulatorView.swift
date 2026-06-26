@@ -123,10 +123,11 @@ private struct SimRegisterGrid: View {
 
 private struct SimRegCell: View {
     let reg: SimRegister
+    @EnvironmentObject private var settings: AppSettings
 
     var body: some View {
         VStack(spacing: 4) {
-            Text(reg.addressLabel)
+            Text(reg.addressLabel(base: settings.addressBase))
                 .font(.system(size: 11, design: .monospaced))
                 .foregroundStyle(.secondary)
             Text("\(reg.value)")
@@ -156,16 +157,51 @@ private struct SimRegCell: View {
 
 private struct SimPager: View {
     @ObservedObject var session: SimulatorSession
+    @State private var jumpStr = ""
 
     var body: some View {
         HStack(spacing: 12) {
-            Button("← Prev") { session.page = max(0, session.page - 1) }
-                .disabled(session.page == 0)
-            Text("Page \(session.page + 1) / \(session.pageCount)  ·  Regs \(session.page * session.pageSize + 1)–\(min((session.page + 1) * session.pageSize, 2000))")
+            Button("← Prev") { session.prevPage() }
+                .disabled(session.startIndex == 0)
+
+            Text("Regs \(session.startIndex + 1)–\(min(session.startIndex + session.pageSize, 2000))")
                 .font(.system(size: 13, design: .monospaced))
                 .foregroundStyle(.secondary)
-            Button("Next →") { session.page = min(session.pageCount - 1, session.page + 1) }
-                .disabled(session.page == session.pageCount - 1)
+
+            Button("Next →") { session.nextPage() }
+                .disabled(session.startIndex + session.pageSize >= 2000)
+
+            Spacer()
+
+            HStack(spacing: 6) {
+                Text("Go to:")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.secondary)
+                TextField("40001", text: $jumpStr)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 80)
+                    .onSubmit { jump() }
+                Button("Go") { jump() }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    .disabled(jumpStr.isEmpty)
+            }
+        }
+    }
+
+    private func jump() {
+        let s = jumpStr.trimmingCharacters(in: .whitespaces)
+        let index: Int?
+        // Accept "4XXXX" Modbus address (e.g. 40450) or plain 1-based offset (e.g. 450)
+        if s.count == 5, s.hasPrefix("4"), let n = Int(s.dropFirst()) {
+            index = n - 1
+        } else if let n = Int(s), n >= 1 {
+            index = n - 1
+        } else {
+            index = nil
+        }
+        if let idx = index {
+            session.goTo(index: idx)
         }
     }
 }
@@ -193,6 +229,7 @@ private struct SimEmptyState: View {
 struct SimEditView: View {
     let reg: SimRegister
     @ObservedObject var session: SimulatorSession
+    @EnvironmentObject private var settings: AppSettings
     @Environment(\.dismiss) private var dismiss
 
     @State private var decStr = ""
@@ -204,7 +241,7 @@ struct SimEditView: View {
             // Header
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Edit Register \(reg.addressLabel)").font(.headline)
+                    Text("Edit Register \(reg.addressLabel(base: settings.addressBase))").font(.headline)
                     Text("Current: \(reg.value)  (0x\(reg.hexLabel))")
                         .font(.subheadline).foregroundStyle(.secondary)
                 }

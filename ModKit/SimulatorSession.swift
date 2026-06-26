@@ -17,20 +17,23 @@ final class SimulatorSession: ObservableObject {
     @Published var uptimeStr = "—"
 
     // UI state
-    @Published var page = 0
+    @Published var startIndex = 0
     @Published var editTarget: SimRegister?
 
     let pageSize = 50
-    var pageCount: Int { 2000 / pageSize }
+    var pageCount: Int { (2000 + pageSize - 1) / pageSize }
 
     var port: UInt16 { UInt16(portStr) ?? 502 }
 
     var pageRegisters: [SimRegister] {
-        let start = page * pageSize
-        return (start..<min(start + pageSize, 2000)).map { i in
+        (startIndex..<min(startIndex + pageSize, 2000)).map { i in
             SimRegister(index: i, value: registers[i])
         }
     }
+
+    func prevPage() { startIndex = max(0, startIndex - pageSize) }
+    func nextPage() { startIndex = min(2000 - pageSize, startIndex + pageSize) }
+    func goTo(index: Int) { startIndex = max(0, min(2000 - 1, index)) }
 
     private let server = ModbusServer()
     private var pollTask: Task<Void, Never>?
@@ -120,6 +123,6 @@ struct SimRegister: Identifiable {
     var value: UInt16
 
     var id: Int { index }
-    var addressLabel: String { "4\(String(format: "%04d", index + 1))" }
+    func addressLabel(base: Int = 1) -> String { "4\(String(format: "%04d", index + base))" }
     var hexLabel: String { String(format: "%04X", value) }
 }

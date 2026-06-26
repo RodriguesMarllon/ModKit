@@ -6,6 +6,7 @@ struct ContentView: View {
     @StateObject private var session = ScanSession()
     @StateObject private var simSession = SimulatorSession()
     @StateObject private var watchStore = WatchStore()
+    @EnvironmentObject private var settings: AppSettings
     @State private var activeTab: AppTab = .scanner
 
     var body: some View {
@@ -15,6 +16,8 @@ struct ContentView: View {
                 tabButton("Scanner", tab: .scanner, icon: "magnifyingglass")
                 tabButton("Watch", tab: .watch, icon: "bookmark", badge: watchStore.items.count)
                 tabButton("Simulator", tab: .simulator, icon: "server.rack")
+                Spacer()
+                addressBaseToggle
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 6)
@@ -31,6 +34,21 @@ struct ContentView: View {
             case .simulator:
                 SimulatorView(session: simSession)
             }
+        }
+    }
+
+    private var addressBaseToggle: some View {
+        HStack(spacing: 4) {
+            Text("Addr")
+                .font(.system(size: 10))
+                .foregroundStyle(.secondary)
+            Picker("", selection: $settings.addressBase) {
+                Text("40000").tag(0)
+                Text("40001").tag(1)
+            }
+            .pickerStyle(.segmented)
+            .frame(width: 110)
+            .controlSize(.mini)
         }
     }
 
