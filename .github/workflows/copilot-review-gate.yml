@@ -1,0 +1,47 @@
+name: Copilot Review Gate
+
+on:
+  pull_request_review:
+    types: [submitted]
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    permissions:
+      pull-requests: read
+      checks: write
+
+    steps:
+      - name: Wait for Copilot review (up to 20 min)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          for i in $(seq 1 40); do
+            review_state=$(gh api repos/$REPO/pulls/$PR_NUMBER/reviews \
+              --jq '[.[] | select(.user.login == "github-copilot[bot]")] | last | .state // empty')
+
+            if [ -n "$review_state" ]; then
+              echo "Copilot review state: $review_state"
+              break
+            fi
+
+            echo "Waiting for Copilot review... attempt $i/40"
+            sleep 30
+          done
+
+          if [ -z "$review_state" ]; then
+            echo "No Copilot review found within 20 minutes — allowing merge."
+            exit 0
+          fi
+
+          if [ "$review_state" = "CHANGES_REQUESTED" ]; then
+            echo "::error::Copilot requested changes. Resolve Copilot comments before merging."
+            exit 1
+          fi
+
+          echo "Copilot approved or left comments only — gate passed."
