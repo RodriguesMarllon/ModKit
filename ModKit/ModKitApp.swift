@@ -8,7 +8,7 @@ struct ModKitApp: App {
                 .environmentObject(AppSettings.shared)
                 .frame(minWidth: 900, minHeight: 600)
         }
-        .windowResizability(.contentMinSize)
+        .windowResizability(.contentMinSize) // enforce 900×600 minimum
         .commands {
             CommandGroup(replacing: .newItem) {}
         }
