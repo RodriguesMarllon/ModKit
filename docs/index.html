@@ -497,6 +497,167 @@
       background: var(--border);
     }
 
+    /* ── DOCS ── */
+    .docs-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 48px;
+    }
+
+    details.doc-block {
+      background: var(--bg-2);
+    }
+
+    details.doc-block + details.doc-block {
+      border-top: 1px solid var(--border);
+    }
+
+    details.doc-block summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 24px 28px;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    details.doc-block summary::-webkit-details-marker { display: none; }
+    details.doc-block summary:hover { background: rgba(255,255,255,0.02); }
+
+    .doc-summary-icon {
+      width: 36px; height: 36px;
+      background: rgba(41,151,255,0.12);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .doc-summary-icon svg { width: 18px; height: 18px; color: var(--accent); }
+
+    .doc-summary-text { flex: 1; }
+
+    .doc-summary-text h3 {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.3px;
+      margin-bottom: 2px;
+    }
+
+    .doc-summary-text p {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    .doc-chevron {
+      width: 18px; height: 18px;
+      color: var(--text-3);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    details[open] .doc-chevron { transform: rotate(90deg); }
+
+    .doc-body {
+      padding: 0 28px 28px 78px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .doc-step {
+      display: flex;
+      gap: 16px;
+    }
+
+    .doc-step-num {
+      width: 26px; height: 26px;
+      background: rgba(41,151,255,0.1);
+      border: 1px solid rgba(41,151,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: var(--mono);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .doc-step-content h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: -0.2px;
+    }
+
+    .doc-step-content p {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin-bottom: 8px;
+    }
+
+    .doc-step-content p:last-child { margin-bottom: 0; }
+
+    .doc-tip {
+      display: flex;
+      gap: 8px;
+      background: rgba(41,151,255,0.06);
+      border: 1px solid rgba(41,151,255,0.15);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.55;
+      margin-top: 6px;
+    }
+
+    .doc-tip::before {
+      content: "→";
+      color: var(--accent);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .doc-kbd {
+      display: inline-block;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 5px;
+      padding: 1px 7px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-2);
+    }
+
+    .doc-mono {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      background: rgba(41,151,255,0.08);
+      border-radius: 4px;
+      padding: 1px 6px;
+    }
+
+    .doc-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       nav { padding: 0 20px; }
@@ -522,6 +683,7 @@
     <li><a href="#features">Features</a></li>
     <li><a href="#how-it-works">How it works</a></li>
     <li><a href="#install">Install</a></li>
+    <li><a href="#docs">Docs</a></li>
   </ul>
   <a href="https://github.com/RodriguesMarllon/ModKit" class="nav-gh" target="_blank">
     <svg viewBox="0 0 16 16" fill="currentColor">
@@ -535,7 +697,7 @@
 <div class="hero">
   <span class="hero-badge">
     <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
-    v1.1.0 — Now with Watch tab
+    v1.2.0 — Float32 · Address base toggle
   </span>
   <h1>Modbus.<br>Native. Precise.</h1>
   <p class="hero-sub">
@@ -697,6 +859,241 @@
   </section>
 </div>
 
+<!-- DOCS -->
+<section id="docs">
+  <p class="section-label">User Guide</p>
+  <h2 class="section-title">How to use ModKit.</h2>
+  <p class="section-sub">Step-by-step reference for every feature. Click a section to expand.</p>
+
+  <div class="docs-grid">
+
+    <!-- Scanner -->
+    <details class="doc-block" open>
+      <summary>
+        <div class="doc-summary-icon">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <circle cx="10" cy="10" r="7"/><path d="M15 15l4 4"/>
+          </svg>
+        </div>
+        <div class="doc-summary-text">
+          <h3>Scanner</h3>
+          <p>Connect to a device and read/write registers in real time</p>
+        </div>
+        <svg class="doc-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>
+      </summary>
+      <div class="doc-body">
+        <div class="doc-step">
+          <div class="doc-step-num">1</div>
+          <div class="doc-step-content">
+            <h4>Connect to a device</h4>
+            <p>Enter the <strong>IP address</strong>, <strong>port</strong> (default 502), and <strong>Unit ID</strong> of your Modbus TCP device, then click <strong>Connect</strong>. A connection timeout of 8 seconds applies.</p>
+            <div class="doc-tip">Most Modbus devices accept only one TCP connection at a time. Close any other client (ModScan32, Modbus Poll) before connecting.</div>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">2</div>
+          <div class="doc-step-content">
+            <h4>Choose what to read</h4>
+            <p>Select the <strong>Function Code</strong> — FC03 reads Holding Registers, FC04 reads Input Registers, FC01/02 read Coils and Discrete Inputs. Set a <strong>Start Address</strong> (0-based protocol address) and a <strong>Count</strong> (number of points).</p>
+            <div class="doc-tip">The address shown in the table depends on the <strong>Addr toggle</strong> (top right). 40001-based: start 0 → shows 40001. 40000-based: start 0 → shows 40000. Match it to your SCADA convention.</div>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">3</div>
+          <div class="doc-step-content">
+            <h4>Read registers</h4>
+            <p>Click <strong>Read</strong> or press <span class="doc-kbd">⌘ R</span> to poll once. Enable <strong>Auto</strong> to poll continuously at a configurable interval (milliseconds).</p>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">4</div>
+          <div class="doc-step-content">
+            <h4>Binary view</h4>
+            <p>Each row shows the register value in decimal, hex, and a <strong>binary bit grid</strong> with bit positions 15 → 0 highlighted in real time. Useful for status words where each bit has a different meaning.</p>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">5</div>
+          <div class="doc-step-content">
+            <h4>Write a register</h4>
+            <p><strong>Double-click</strong> any row or right-click → <strong>Write Register</strong> to open the write panel. Enter a decimal or hex value and click Write (FC06). The register is re-read immediately after.</p>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">6</div>
+          <div class="doc-step-content">
+            <h4>Add to Watch</h4>
+            <p>Right-click any register → <strong>Add to Watch…</strong> to pin it to the Watch tab with a custom name, type, and scale.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Watch -->
+    <details class="doc-block">
+      <summary>
+        <div class="doc-summary-icon">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M5 5l3 3 4-4M5 13l3 3 4-4"/>
+          </svg>
+        </div>
+        <div class="doc-summary-text">
+          <h3>Watch</h3>
+          <p>Monitor named tags with scale factors and Float32 decoding</p>
+        </div>
+        <svg class="doc-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>
+      </summary>
+      <div class="doc-body">
+        <div class="doc-step">
+          <div class="doc-step-num">1</div>
+          <div class="doc-step-content">
+            <h4>Add a watch</h4>
+            <p>In the <strong>Scanner</strong> tab, right-click any register → <strong>Add to Watch…</strong>. A sheet opens where you configure the watch before adding it.</p>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">2</div>
+          <div class="doc-step-content">
+            <h4>Types</h4>
+            <p><strong>Register</strong> — monitors the full 16-bit value (0–65535) with an optional scale divisor.</p>
+            <p><strong>Bit</strong> — monitors a single bit (0–15) of the register. The sheet shows the current value of each bit in real time so you can pick the right one.</p>
+            <p><strong>Float32</strong> — reads two consecutive registers and decodes them as an IEEE 754 single-precision float. Choose the word order: <span class="doc-mono">AB CD</span> (high word at address, low word at address+1) or <span class="doc-mono">CD AB</span> (reversed). Check your device manual for the correct order.</p>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">3</div>
+          <div class="doc-step-content">
+            <h4>Scale divisor</h4>
+            <p>For Register type, set a <strong>÷ divisor</strong> to convert raw integer values to engineering units. Use presets <span class="doc-mono">÷10</span>, <span class="doc-mono">÷100</span>, <span class="doc-mono">÷1000</span>, or type any custom value. The preview line shows the result in real time.</p>
+            <div class="doc-tip">Example: a current sensor returns 1337 raw. With ÷100, Watch displays 13.37 A.</div>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">4</div>
+          <div class="doc-step-content">
+            <h4>Dot colors</h4>
+            <p><strong>Gray</strong> — no data yet (device not polled or register out of scan range).<br>
+            <strong>Orange</strong> — active (non-zero value or bit = 1).<br>
+            <strong>Green</strong> — present but zero.</p>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">5</div>
+          <div class="doc-step-content">
+            <h4>Edit in-place</h4>
+            <p>Right-click any watch → <strong>Edit Watch…</strong> to change its name, type, word order, or scale without removing and re-adding it. Right-click → <strong>Remove Watch</strong> to delete.</p>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">6</div>
+          <div class="doc-step-content">
+            <h4>Persistence</h4>
+            <p>All watches are saved automatically and restored on next launch. The badge on the Watch tab shows how many watches are configured.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Simulator -->
+    <details class="doc-block">
+      <summary>
+        <div class="doc-summary-icon">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <rect x="3" y="5" width="16" height="14" rx="2"/><path d="M7 2v3M15 2v3M3 10h16"/>
+          </svg>
+        </div>
+        <div class="doc-summary-text">
+          <h3>Simulator</h3>
+          <p>Turn your Mac into a Modbus TCP slave with 2,000 registers</p>
+        </div>
+        <svg class="doc-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>
+      </summary>
+      <div class="doc-body">
+        <div class="doc-step">
+          <div class="doc-step-num">1</div>
+          <div class="doc-step-content">
+            <h4>Start the server</h4>
+            <p>Enter a <strong>port</strong> and click <strong>Start Server</strong>. The server binds to <span class="doc-mono">0.0.0.0</span> and accepts connections from any client on the network.</p>
+            <div class="doc-tip">macOS blocks ports below 1024 for non-root apps. To use the standard Modbus port 502, redirect it with: <br><br><span class="doc-mono" style="display:block; margin-top:4px;">echo "rdr pass proto tcp from any to any port 502 -> 127.0.0.1 port 5020" | sudo pfctl -ef -</span><br>Then set the simulator port to <strong>5020</strong>. Run <span class="doc-mono">sudo pfctl -d</span> to remove the rule when done.</div>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">2</div>
+          <div class="doc-step-content">
+            <h4>Navigate registers</h4>
+            <p>The grid shows 50 registers per page. Use <strong>← Prev</strong> / <strong>Next →</strong> to move between pages, or type an address in the <strong>Go to</strong> field and press Enter — the grid will start exactly at that register.</p>
+            <div class="doc-tip">Accepts both Modbus-style addresses (<span class="doc-mono">40450</span>) and plain 1-based offsets (<span class="doc-mono">450</span>).</div>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">3</div>
+          <div class="doc-step-content">
+            <h4>Edit register values</h4>
+            <p><strong>Click any cell</strong> to open the edit panel. You can enter the value as decimal, hex, or toggle individual bits. Changes take effect immediately — any connected client will read the new value on the next poll.</p>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">4</div>
+          <div class="doc-step-content">
+            <h4>Supported function codes</h4>
+            <p>The simulator responds to <strong>FC03</strong> (Read Holding Registers), <strong>FC06</strong> (Write Single Register), and <strong>FC10</strong> (Write Multiple Registers). Other function codes return exception 0x01.</p>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">5</div>
+          <div class="doc-step-content">
+            <h4>Stats bar</h4>
+            <p>While running, the stats bar shows the bound address, last connected client IP, total read/write counts, and server uptime. Use <strong>Reset All</strong> to zero all 2,000 registers at once.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Address Base -->
+    <details class="doc-block">
+      <summary>
+        <div class="doc-summary-icon">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M4 6h14M4 11h10M4 16h6"/><circle cx="17" cy="15" r="3"/>
+          </svg>
+        </div>
+        <div class="doc-summary-text">
+          <h3>Address Base toggle</h3>
+          <p>Match ModKit's display to your SCADA addressing convention</p>
+        </div>
+        <svg class="doc-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 4l4 4-4 4"/></svg>
+      </summary>
+      <div class="doc-body">
+        <div class="doc-step">
+          <div class="doc-step-num">1</div>
+          <div class="doc-step-content">
+            <h4>The two conventions</h4>
+            <p>Modbus protocol addresses are 0-based. But SCADA systems disagree on how to display them:</p>
+            <p><strong>40001-based</strong> (IEC standard, default): register 0 is displayed as <span class="doc-mono">40001</span>. Used by most PLCs and documentation.</p>
+            <p><strong>40000-based</strong>: register 0 is displayed as <span class="doc-mono">40000</span>. Used by some SCADA platforms (e.g. Power Operation / CitectSCADA).</p>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">2</div>
+          <div class="doc-step-content">
+            <h4>Using the toggle</h4>
+            <p>The <strong>Addr</strong> toggle is visible in the top-right of the tab bar. Switch between <span class="doc-mono">40000</span> and <span class="doc-mono">40001</span> — the change applies instantly to all tabs (Scanner, Watch, Simulator). The preference is saved between sessions.</p>
+            <div class="doc-tip">If a tag named <span class="doc-mono">40455</span> in your SCADA appears at <span class="doc-mono">40456</span> in ModKit, switch the toggle to 40000-based to align the display.</div>
+          </div>
+        </div>
+        <div class="doc-step">
+          <div class="doc-step-num">3</div>
+          <div class="doc-step-content">
+            <h4>Protocol is unaffected</h4>
+            <p>The toggle only changes what is <em>displayed</em>. The underlying Modbus protocol address sent over TCP does not change — you are always reading and writing the same physical register.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+
+  </div>
+</section>
+
 <!-- INSTALL -->
 <section id="install">
   <p class="section-label">Get started</p>
@@ -735,7 +1132,7 @@
   <div class="footer-links">
     <a href="https://github.com/RodriguesMarllon/ModKit/releases" target="_blank">Releases</a>
     <a href="https://github.com/RodriguesMarllon/ModKit/issues" target="_blank">Issues</a>
-    <a href="https://github.com/RodriguesMarllon/ModKit/blob/master/LICENSE" target="_blank">License</a>
+    <a href="https://github.com/RodriguesMarllon/ModKit/blob/main/LICENSE" target="_blank">License</a>
     <a href="https://github.com/RodriguesMarllon/ModKit" target="_blank">GitHub</a>
   </div>
 </footer>
